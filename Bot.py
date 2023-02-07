@@ -1,6 +1,9 @@
+
 from dataclasses import dataclass
 from typing import Dict
 import datetime
+from Calendar import END_POINTS, Calendar
+calendar = Calendar()
 
 
 class Bot:
@@ -8,9 +11,13 @@ class Bot:
         self.bot_responses = bot_response
 
     def get_bot_response(self, message: str):
-
-        return {"content": self.bot_responses.get(message, "How can I help you?"), "is_bot": True}
+        calendar_response = calendar.parse_message(message)
+        if calendar_response:
+            content = calendar_response
+        else:
+            content = self.bot_responses.get(message, "How can I help you?")
+        return {"content": content, "is_bot": True}
 
 
 bot = Bot({"hello": "Hey!",
-           "how are you?": 'Fine!', "what are you doing?": "Nothing.", "what is the time?": datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")})
+           "how are you?": 'Fine!', "what are you doing?": "Nothing.", "what is the time?": datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"), "events": f'My events api is {END_POINTS.get("get_events")}'})

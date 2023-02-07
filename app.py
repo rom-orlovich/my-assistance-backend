@@ -1,36 +1,30 @@
-from flask import Flask
+from flask import Flask, request, redirect, session
 from flask_restful import Resource, Api, reqparse
+# import google.oauth2.credentials
 from Chat import chat
 from flask_cors import CORS
+from google_auth_oauthlib.flow import Flow
+from googleapiclient.discovery import build
+from os import path
+import datetime
+import pathlib
+from dotenv import load_dotenv
+from os import getenv
+from ChatAPI import ChatAPI
+from Auth import Auth
+load_dotenv()
+
 
 app = Flask(__name__)
 api = Api(app)
 
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
-messages_args = reqparse.RequestParser()
-messages_args.add_argument("content", type=str, required=True)
-messages_args.add_argument("user_id", type=int)
-messages_args.add_argument("is_bot", type=bool)
+app.secret_key = getenv("SECRET_KEY")
+api.add_resource(ChatAPI, "/api/messages")
+api.add_resource(Auth, "/api/auth", "/api/auth/authorize")
 
+cors = CORS(app, resources={
+    r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
-class ChatMessage(Resource):
-    def get(self):
-        try:
-            return chat.get_messages()
-        except:
-            return []
-
-    def delete(self):
-        pass
-
-    def post(self):
-        message = messages_args.parse_args()
-        message_id = chat.manage_chat(message)
-
-        return {"message": f'The message with id-{message_id} was created successfully'}, 201
-
-
-api.add_resource(ChatMessage, "/api/messages")
 
 if __name__ == "__main__":
     app.run(debug=True)

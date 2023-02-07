@@ -1,1 +1,4 @@
 env/
+client_secert.json
+.secret.txt
+.env

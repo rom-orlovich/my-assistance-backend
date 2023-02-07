@@ -1,16 +1,7 @@
-from dataclasses import dataclass
-from typing import Optional
+
+from my_types import Message
 import datetime
 from Bot import bot
-
-
-@dataclass
-class Message:
-    message_id: Optional[int]
-    user_id: Optional[int]
-    content: str
-    date: str
-    is_bot: bool
 
 
 class Chat:

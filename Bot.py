@@ -20,4 +20,4 @@ class Bot:
 
 
 bot = Bot({"hello": "Hey!",
-           "how are you?": 'Fine!', "what are you doing?": "Nothing.", "what is the time?": datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"), "events": f'My events api is {END_POINTS.get("get_events")}'})
+           "how are you?": 'Fine!', "what are you doing?": "Nothing.", "what is the time?": datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")})

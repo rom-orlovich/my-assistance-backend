@@ -12,7 +12,7 @@ class Event:
             "summary": True
         }
         self.event_opt = event_opt
-        self.event_normalize_opt = self.__get_normalize_event(event_opt)
+        # self.event_normalize_opt = self.__get_normalize_event(event_opt)
 #    'summary'= 'Google I/O 2015',
 #   '?location'= '800 Howard St., San Francisco, CA 94103',
 #     '?description'= 'A chance to hear more about Google\'s developer products.',

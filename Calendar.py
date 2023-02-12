@@ -8,7 +8,6 @@ from my_types import Message
 from Event import Event
 import types
 END_POINTS = {
-
     "create_events": "\calendar\events\create",
     "get_events": "\calendar\events\get"
 }
@@ -50,8 +49,6 @@ class Calendar:
     def create_events(self, query: List[str]):
 
         service = self.get_service()
-        # if len(query) == 0:
-        #     return "Please provide valid parameter."
 
         event = {
             'summary': 'Google I/O 2015',
@@ -66,8 +63,7 @@ class Calendar:
                 'timeZone': 'America/Los_Angeles',
             },
         }
-        # build_event = Event(query).event_normalize_opt
-        # print(build_event)
+
         res = service.events().insert(calendarId='primary', body=event).execute()
         print(res)
 
@@ -84,9 +80,7 @@ class Calendar:
         print(message_split)
         query = message_split[1:] if len(message_split) > 1 else []
         print(query)
-        # print(endpoints, END_POINTS.get("get_events"))
-        # print(END_POINTS.get("create_events") in endpoints)
-        # print(query)
+
         if END_POINTS.get("get_events") in endpoints:
             return self.get_events(query)
         if END_POINTS.get("create_events") in endpoints:

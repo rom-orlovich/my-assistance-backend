@@ -6,8 +6,7 @@ from flask_cors import CORS
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from os import path
-import datetime
-import pathlib
+
 from dotenv import load_dotenv
 from os import getenv
 from ChatAPI import ChatAPI

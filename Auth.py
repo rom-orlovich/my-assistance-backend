@@ -6,8 +6,6 @@ import pathlib
 from os import path, getenv
 
 
-# MY_ENV_VAR = getenv('MY_ENV_VAR')
-
 CLIENT_SECRETS_FILE = "client_secret.json"
 scopes = ["https://www.googleapis.com/auth/userinfo.email",
           "https://www.googleapis.com/auth/userinfo.profile", "openid", "https://www.googleapis.com/auth/calendar"]
@@ -34,7 +32,6 @@ class Auth(Resource):
     def get(self):
         authorization_response = request.url
         code = request.args.get("code")
-        print(authorization_response)
 
         t = flow.fetch_token(code=code)
         credentials = flow.credentials

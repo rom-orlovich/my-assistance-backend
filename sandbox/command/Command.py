@@ -53,17 +53,18 @@ class Command:
         cur_parameter = None
         for i, word in enumerate(words):
             parameters_opt = cur_word.get(i)
-            print(cur_word, parameters_opt)
             if parameters_opt:
-
                 cur_parameter = parameters.get(
                     parameters_opt.field_name)
+                until = parameters.get(parameters_opt.until)
                 if cur_parameter:
                     cur_parameter.append(word)
                 else:
                     parameters[f'{parameters_opt.field_name}'] = [word]
             else:
-                if cur_word.get(word):
+                if until and until is not word:
+                    cur_parameter.append(word)
+                elif cur_word.get(word):
                     cur_word = cur_word[word]
                 else:
                     print(parameters)
@@ -71,7 +72,6 @@ class Command:
 
         if cur_word.get("end"):
             if parameters:
-
                 self.cb(parameters)
             else:
                 self.cb()

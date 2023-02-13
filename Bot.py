@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Dict
 import datetime
-from Calendar import END_POINTS, Calendar
+from Calendar import Calendar
 calendar = Calendar()
 
 

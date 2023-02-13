@@ -4,10 +4,10 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from datetime import datetime
 from typing import List, Dict, TypeVar
-from CalenderChat import CalenderChat
+from sandbox.CalenderChat import CalenderChat
 
 from my_types import Message
-from Event import Event
+from sandbox.Event import Event
 import types
 
 from enum import Enum
@@ -78,14 +78,14 @@ class Calendar:
             return
         if "\calendar" not in content:
             return
-        if self.chat_manager.manage_commands(content):
-            pass
-        conversation = self.chat_manager.conversation()
-        if conversation:
-            return conversation
-        results = self.chat_manager.submit_results()
-        if results:
-            pass
+        # if self.chat_manager.manage_commands(content):
+        #     pass
+        # conversation = self.chat_manager.conversation()
+        # if conversation:
+        #     return conversation
+        # results = self.chat_manager.submit_results()
+        # if results:
+        #     pass
 
         # self.calender_chat["mode"] = True
 

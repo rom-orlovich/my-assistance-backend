@@ -6,7 +6,7 @@
 # description
 # summary
 
-from Questionnaire import Questionnaire
+from sandbox.Questionnaire import Questionnaire
 
 
 ADD_EVENTS_QUESTIONNAIRE = [

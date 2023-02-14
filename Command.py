@@ -94,7 +94,6 @@ class Command:
         if not self.parameters_metadata:
             return
 
-        print(words)
         parameters = {}
         for param_indexes in params_indexes:
             metadata = self.parameters_metadata.get(param_indexes.token)
@@ -131,7 +130,7 @@ class Command:
             if not startIndex and cur_param:
 
                 startIndex = i
-                print(startIndex)
+
                 cur_word = cur_word["$"]
                 cur_param_name = cur_param.get("token")
 

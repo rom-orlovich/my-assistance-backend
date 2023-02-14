@@ -16,11 +16,12 @@ class Chat:
         self.message_id += 1
         new_message = {"message_id": self.message_id,
                        "date": datetime.datetime.now().isoformat(), "is_bot": False, **message}
+        print(new_message)
         self.messages.append(new_message)
 
     def manage_chat(self, message: Message):
         self.create_message(message)
-        bot_response = self.bot.get_bot_response(message.content)
+        bot_response = self.bot.get_bot_response(message.get("content"))
         self.create_message(bot_response)
 
         return self.message_id

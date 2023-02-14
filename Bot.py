@@ -16,9 +16,12 @@ class Bot:
 
     def get_bot_response(self, message: str):
         calendar_response = self.calender.parse_message(message)
+
         if calendar_response:
+
             content = calendar_response
         else:
+
             content = self.bot_responses.get(message, "How can I help you?")
         return {"content": content, "is_bot": True}
 

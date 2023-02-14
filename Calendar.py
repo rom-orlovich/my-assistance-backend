@@ -113,14 +113,13 @@ class Calendar:
             return
 
         res = self.command_get_closet_event.execute(content)
-
         if res:
-
             return res
 
         res = self.command_create_events.execute(content)
         if res:
             return res
+        return None
 
 
 # calendar = Calendar()

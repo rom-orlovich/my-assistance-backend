@@ -1,7 +1,7 @@
 from google_auth_oauthlib.flow import Flow
 
 from flask_restful import Resource, request
-from flask import session, redirect
+from flask import Blueprint, session, redirect
 import pathlib
 from os import path, getenv
 
@@ -28,14 +28,20 @@ def credentials_to_dict(credentials):
             'scopes': credentials.scopes}
 
 
-class Auth(Resource):
-    def get(self):
-        authorization_response = request.url
-        code = request.args.get("code")
+auth = Blueprint("auth", __name__, url_prefix="/api/auth")
 
-        t = flow.fetch_token(code=code)
-        credentials = flow.credentials
+# class Auth(Resource):
 
-        session['credentials'] = credentials_to_dict(credentials)
 
-        return redirect("http://localhost:3000")
+@auth.route("/authorize", methods=["GET"])
+def get():
+    # authorization_response = request.url
+    code = request.args.get("code")
+
+    flow.fetch_token(code=code)
+    credentials = flow.credentials
+    print(flow)
+
+    session['credentials'] = credentials_to_dict(credentials)
+
+    return redirect("http://localhost:3000")

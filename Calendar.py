@@ -6,16 +6,18 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from datetime import datetime
 from typing import List, Dict
+from lib.DateUtils import DateUtils
 
 
 from my_types import Event
-from sandbox.command.Command import Command, DateUtils, ParamOption
+from Command import Command, ParamOption
 
 
 class Calendar:
     def __init__(self) -> None:
         self.command_get_closet_event = self.get_my_closet_event()
         self.command_create_events = self.create_event_commands()
+        self.date_util = DateUtils()
 
     def get_service(self):
         if 'credentials' not in session:
@@ -46,26 +48,35 @@ class Calendar:
 
         return "The event was create successfully"
 
+    def get_date_event(self, event, type: str):
+        date_dict = (event.get(type))
+        date_str = date_dict.get("dateTime")
+
+        return date_str
+
     def get_closet_event(self):
         events = self.get_events()
 
         if len(events):
             event = events[0]
-            # start = event.start.date
-            start_date_dict = (event.get("start"))
-            start_date_str = datetime.fromisoformat(
-                start_date_dict.get("dateTime"))
-            start_date = start_date_str.strftime("%d/%m/%y")
-            start_time = start_date_str.strftime("%H:%M")
-            end_date_dict = (event.get("end"))
-            end_date_str = datetime.fromisoformat(
-                end_date_dict.get("dateTime"))
-            end_date = end_date_str.strftime("%d/%m/%y")
-            end_time = end_date_str.strftime("%H:%M")
-            print(event)
-            print(f'Your next event is on {start_date} at {start_time} and end on {end_date} at {end_time}'
-                  )
+            # start_date_dict = (event.get("start"))
+            # start_date_str = datetime.fromisoformat(
+            #     start_date_dict.get("dateTime"))
+            # start_date = start_date_str.strftime("%d/%m/%y")
+            # start_time = start_date_str.strftime("%H:%M")
+            # end_date_dict = (event.get("end"))
+            # end_date_str = datetime.fromisoformat(
+            #     end_date_dict.get("dateTime"))
+            # end_date = end_date_str.strftime("%d/%m/%y")
+            # end_time = end_date_str.strftime("%H:%M")
+            start_date, start_time = self.date_util.get_date_and_time(
+                self.get_date_event(event, "start"))
+            end_date, end_time = self.date_util.get_date_and_time(
+                self.get_date_event(event, "end"))
+
             return f'Your next event is on {start_date} at {start_time} and end on {end_date} at {end_time}'
+        else:
+            return "No event was found"
 
     def get_my_closet_event(self):
         command = Command(self.get_closet_event)

@@ -62,12 +62,11 @@ class Calendar:
             "$location": ParamOption("location", "$location"),
             "$summary": ParamOption("summary", "$summary")
         }
-
+        commands = ["please add a new event that its summary is $summary. The event will begin on $start and end on $end and his location will place in $location",
+                    "please create a new event that will start on $start and end on $end and will place in $location"
+                    ]
         command = Command(self.create_events, parameters_options)
-        command.add_command(
-            "please add a new event that its summary is $summary. The event will begin on $start and end on $end and his location will place in $location")
-        command.add_command(
-            "please create a new event that will start on $start and end on $end and will place in $location")
+        command.add_commands(commands)
         return command
 
     def get_events(self):
@@ -99,27 +98,22 @@ class Calendar:
 
     def get_my_closet_event(self):
         command = Command(self.get_closet_event)
-        command.add_command("when is my next event?")
-        command.add_command("when is my nearest event?")
-        command.add_command("when is my closet event?")
-        command.add_command("when's my closet event?")
-        command.add_command("what's my next event?")
-        command.add_command("what is my next event?")
-        command.add_command("whats my next event?")
+        commands = ["when is my next event?", "when is my nearest event?",
+                    "when is my closet event?",
+                    "when's my closet event?",
+                    "what's my next event?",
+                    "what is my next event?",
+                    "whats my next event?"]
+        command.add_commands(commands)
         return command
 
     def parse_message(self, content: str):
         if not content:
             return
-
         res = self.command_get_closet_event.execute(content)
         if res:
             return res
-
         res = self.command_create_events.execute(content)
         if res:
             return res
         return None
-
-
-# calendar = Calendar()

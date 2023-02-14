@@ -15,7 +15,17 @@ class DateUtils:
             formats = [format, *formats]
         for format in formats:
             try:
-                print(datetime.strptime(value, format))
                 return datetime.strptime(value, format)
             except ValueError as e:
                 print(e)
+
+    def get_date_and_time(self, value: str, format: str = None, delimiter=","):
+        default_format = format or self.formats[0]
+        try:
+            date_time = datetime.fromisoformat(
+                value)
+        except:
+            date_time = datetime.strptime(value, default_format)
+        date_str = date_time.strftime(default_format)
+        date, time = date_str.split(delimiter)
+        return date, time

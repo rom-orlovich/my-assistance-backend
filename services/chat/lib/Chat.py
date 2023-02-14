@@ -1,5 +1,5 @@
 
-from Bot import Bot
+from services.chat.lib.bot import Bot
 from my_types import Message
 import datetime
 
@@ -16,7 +16,7 @@ class Chat:
         self.message_id += 1
         new_message = {"message_id": self.message_id,
                        "date": datetime.datetime.now().isoformat(), "is_bot": False, **message}
-        print(new_message)
+
         self.messages.append(new_message)
 
     def manage_chat(self, message: Message):

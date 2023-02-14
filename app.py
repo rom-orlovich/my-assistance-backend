@@ -4,8 +4,8 @@ from flask_restful import Api
 from flask_cors import CORS
 from dotenv import load_dotenv
 from os import getenv
-from ChatAPI import chat_api
-from Auth import auth
+from services.chat.routes.chatAPI import chat_api
+from services.auth.Auth import auth
 load_dotenv()
 
 
@@ -18,8 +18,6 @@ app.register_blueprint(chat_api)
 app.register_blueprint(auth)
 CORS(app, resources={
     r"/api/*": {"origins": "*"}}, supports_credentials=True)
-# api.add_resource(ChatAPI, "/api/messages")
-# api.add_resource(Auth, "/api/auth", "/api/auth/authorize")
 
 
 if __name__ == "__main__":

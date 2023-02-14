@@ -1,9 +1,8 @@
 from google_auth_oauthlib.flow import Flow
 
-from flask_restful import Resource, request
-from flask import Blueprint, session, redirect
+from flask import Blueprint, session, redirect, request
 import pathlib
-from os import path, getenv
+from os import path
 
 
 CLIENT_SECRETS_FILE = "client_secret.json"
@@ -30,12 +29,10 @@ def credentials_to_dict(credentials):
 
 auth = Blueprint("auth", __name__, url_prefix="/api/auth")
 
-# class Auth(Resource):
-
 
 @auth.route("/authorize", methods=["GET"])
 def get():
-    # authorization_response = request.url
+
     code = request.args.get("code")
 
     flow.fetch_token(code=code)

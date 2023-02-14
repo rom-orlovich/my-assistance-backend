@@ -12,54 +12,7 @@ from typing import Callable, Dict, List, TypeVar
 from click import command
 
 from lib.date_utils import DateUtils
-
-
-PO = TypeVar("PO", bound="ParamOption")
-
-
-# class DateUtils:
-
-#     # ['%d/%m/%Y,%H:%M:%S', '%d-%m-%y,%H:%M:%S', "%d-%m-%Y"]
-#     formats: List[str]
-
-#     def __init__(self) -> None:
-#         self.formats = ['%d/%m/%Y,%H:%M', '%d-%m-%y,%H:%M', "%d-%m-%Y"]
-
-#     def convert(self, value: str, format: str = None):
-#         formats = self.formats
-#         if format:
-#             formats = [format, *formats]
-#         for format in formats:
-#             try:
-#                 print(datetime.strptime(value, format))
-#                 return datetime.strptime(value, format)
-#             except ValueError as e:
-#                 print(e)
-
-
-# @dataclass
-# class TypeOption:
-#     type: str
-#     format: str = None
-
-
-@dataclass
-class ParamOption:
-    field_name: str
-    token: str
-
-    def keys(self):
-        return ["field_name", "token"]
-
-    def __getitem__(self, key):
-        return self.__getattribute__(key)
-
-
-@dataclass
-class ParamsLocations:
-    token: str
-    min: int
-    max: int
+from lib.my_types import ParamOption, ParamsLocations
 
 
 class Command:
@@ -132,9 +85,7 @@ class Command:
 
          # Check where is the first position of parameter location and save its index and his name.
             if not startIndex and cur_param:
-
                 startIndex = i
-
                 cur_word = cur_word["$"]
                 cur_param_name = cur_param.get("token")
 

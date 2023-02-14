@@ -1,24 +1,26 @@
 
+from Bot import Bot
 from my_types import Message
 import datetime
-from Bot import bot
 
 
 class Chat:
     def __init__(self) -> None:
         self.messages = list()
         self.message_id = 0
-        self.create_message(bot.get_bot_response(""))
+        self.bot = Bot({"hello": "Hey!",
+                        "how are you?": 'Fine!', "what are you doing?": "Nothing.", "what is the time?": datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")})
+        self.create_message(self.bot.get_bot_response(""))
 
     def create_message(self, message: Message):
         self.message_id += 1
-        new_message = {"id": self.message_id,
+        new_message = {"message_id": self.message_id,
                        "date": datetime.datetime.now().isoformat(), "is_bot": False, **message}
         self.messages.append(new_message)
 
     def manage_chat(self, message: Message):
         self.create_message(message)
-        bot_response = bot.get_bot_response(message.content)
+        bot_response = self.bot.get_bot_response(message.content)
         self.create_message(bot_response)
 
         return self.message_id

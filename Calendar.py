@@ -121,3 +121,6 @@ class Calendar:
         res = self.command_create_events.execute(content)
         if res:
             return res
+
+
+# calendar = Calendar()

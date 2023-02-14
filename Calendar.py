@@ -5,24 +5,17 @@ from flask import redirect, session
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from datetime import datetime
-from typing import List, Dict, TypeVar
+from typing import List, Dict
 
 
-from my_types import Event, Message
-from sandbox.command.Command import Command, DateUtil, ParamOption, TypeOption
+from my_types import Event
+from sandbox.command.Command import Command, DateUtils, ParamOption
 
 
 class Calendar:
     def __init__(self) -> None:
         self.command_get_closet_event = self.get_my_closet_event()
         self.command_create_events = self.create_event_commands()
-
-    def __print_events(self, events: Dict[str, any]):
-        response = ""
-        for event in events:
-            for key, value in event.items():
-                response += f'{key}:{value}'+"\n"
-        return response
 
     def get_service(self):
         if 'credentials' not in session:
@@ -81,13 +74,14 @@ class Calendar:
         command.add_command("when is my closet event?")
         command.add_command("when's my closet event?")
         command.add_command("what's my next event?")
+        command.add_command("what is my next event?")
         command.add_command("whats my next event?")
 
         return command
 
     def create_event_dict(self, parameters: Event):
 
-        date_util = DateUtil()
+        date_util = DateUtils()
 
         event = {
             'summary': parameters.get("summary"),
@@ -99,7 +93,6 @@ class Calendar:
             'end': {
                 'dateTime': date_util.convert(parameters.get("end")).isoformat(),
                 "timeZone": "Israel"
-
             },
         }
 
@@ -107,10 +100,10 @@ class Calendar:
 
     def create_event_commands(self):
         parameters_options = {
-            "$start": ParamOption("start", TypeOption("date"), "$start"),
-            "$end": ParamOption("end", TypeOption("date"), "$end"),
-            "$location": ParamOption("location", TypeOption("str"), "$location"),
-            "$summary": ParamOption("summary", TypeOption("str"), "$summary")
+            "$start": ParamOption("start", "$start"),
+            "$end": ParamOption("end", "$end"),
+            "$location": ParamOption("location", "$location"),
+            "$summary": ParamOption("summary", "$summary")
         }
         command = Command(self.create_events, parameters_options)
         command.add_command(

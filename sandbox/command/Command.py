@@ -11,57 +11,48 @@ from typing import Callable, Dict, List, TypeVar
 
 from click import command
 
+from lib.DateUtils import DateUtils
+
 
 PO = TypeVar("PO", bound="ParamOption")
 
 
-class DateUtil:
+# class DateUtils:
 
-    # ['%d/%m/%Y,%H:%M:%S', '%d-%m-%y,%H:%M:%S', "%d-%m-%Y"]
-    formats: List[str]
+#     # ['%d/%m/%Y,%H:%M:%S', '%d-%m-%y,%H:%M:%S', "%d-%m-%Y"]
+#     formats: List[str]
 
-    def __init__(self) -> None:
-        self.formats = ['%d/%m/%Y,%H:%M', '%d-%m-%y,%H:%M', "%d-%m-%Y"]
+#     def __init__(self) -> None:
+#         self.formats = ['%d/%m/%Y,%H:%M', '%d-%m-%y,%H:%M', "%d-%m-%Y"]
 
-    def convert(self, value: str, format: str = None):
-        formats = self.formats
-        if format:
-            formats = [format, *formats]
-        for format in formats:
-            try:
-                print(datetime.strptime(value, format))
-                return datetime.strptime(value, format)
-            except ValueError as e:
-                print(e)
+#     def convert(self, value: str, format: str = None):
+#         formats = self.formats
+#         if format:
+#             formats = [format, *formats]
+#         for format in formats:
+#             try:
+#                 print(datetime.strptime(value, format))
+#                 return datetime.strptime(value, format)
+#             except ValueError as e:
+#                 print(e)
 
 
-@dataclass
-class TypeOption:
-    type: str
-    format: str = None
+# @dataclass
+# class TypeOption:
+#     type: str
+#     format: str = None
 
 
 @dataclass
 class ParamOption:
     field_name: str
-    type_options: TypeOption
     token: str
 
     def keys(self):
-        return ["field_name", "type_options", "token"]
+        return ["field_name", "token"]
 
     def __getitem__(self, key):
         return self.__getattribute__(key)
-
-    def convert(self, value):
-        if self.type_options.type == "int":
-            return int(value)
-        if self.type_options.type == "date":
-            if self.type_options.format:
-                date = DateUtil()
-                print(date.convert(value, self.type_options.format))
-                return date.convert(value, self.type_options.format)
-        return value
 
 
 @dataclass
@@ -99,12 +90,9 @@ class Command:
 
         root_word["end"] = True
 
-        # print(self.words)
-
     def get_parameters(self, words: List[str], params_indexes: List[ParamsLocations]):
         if not self.parameters_metadata:
             return
-        # words = re.split(" ", content.)
 
         print(words)
         parameters = {}
@@ -163,32 +151,3 @@ class Command:
                 res = self.cb()
 
         return res
-
-
-if __name__ == "__main__":
-    # command.add_command("please create new event on $1", {
-    #                     "$1": ParamOption("date", "on", "date")})
-
-    parametersOptions = {"$start": ParamOption(
-        "start", TypeOption("date"), "$start"), "$end": ParamOption("end", TypeOption("date"), "$end"), "$location": ParamOption("location", TypeOption("str"), "$location")}
-
-    command = Command(lambda x: print("5", x), parametersOptions)
-    command2 = Command(lambda: print("5ssd"))
-
-    command2.add_command("what is the time now?")
-
-    command2.execute("what is the time now?")
-
-    command.add_command(
-        "please create new event on $start at $end and location in $location")
-
-    command.execute(
-        "please create new event on 12/12/23 at 12:00 and location in tel aviv")
-    # command.get_parameters(
-    #     "please create new event on 12/12/23 at 12:00 and location in tel aviv",
-    #     [ParamsLocations(
-    #         "$start", 5, 6), ParamsLocations(
-    #             "$end", 7, 8)], )
-
-# please create new event on $1
-# please create new event on 25/02/23

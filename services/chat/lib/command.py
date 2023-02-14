@@ -7,42 +7,85 @@ from datetime import datetime
 import re
 from symbol import parameters
 
-from typing import Callable, Dict, List, TypeVar
+from typing import Callable, Dict, List, Tuple, TypeVar, Union
 
 from click import command
 
 from lib.date_utils import DateUtils
-from lib.my_types import ParamOption, ParamsLocations
+from services.chat.lib.chat_types import ParamOption, ParamsLocations
 
 
 class Command:
     def __init__(self, cb: Callable, parameters_metadata: Dict[str, ParamOption] = None) -> None:
+        """
+        Args:
+            cb (Callable): A callback that will execute when one of the commands are match.
+            parameters_metadata (Dict[str, ParamOption], optional):Meta data about the parameter that may include in the command. Defaults to None.
+        """
         self.words = {}
         self.parameters_metadata = parameters_metadata
         self.cb = cb
 
+    def split_sentence_to_words(self, sentence: str, regex_delimiter: str = " |, |\. ") -> List[str]:
+        """
+        Args:
+            sentence (str): The sentences.
+            regex_delimiter (str, optional): How to split the sentences Defaults to " |, |\. ".
+
+        Returns:
+            _type_: List of the non empty words from the sentence.
+        """
+        return list(filter(None, re.split(regex_delimiter, sentence.lower())))
+
+    def get_token_parameter(self, word: str) -> Union[Tuple[ParamOption, str], None]:
+        """
+        Args:
+            word (str): word to analyze if it is token.
+        Returns:
+            Union[Tuple[ParamOption, str], None]: The key and the value of the token.
+        """
+        parameters_opt = self.parameters_metadata.get(word)
+        if word.startswith("$") and parameters_opt:
+            key = f'{word[0]}'
+            token = {**parameters_opt}
+
+            return token, key
+        return None
+
     def add_command(self, command: str):
-        words = list(filter(None, re.split(" |, |\. ", command.lower())))
-
+        """ Use Trie algorithm.
+        Words that already exist in the Trie node, will attach to the next node.
+        Also, the methods analyze where node the token will be placed.
+        Args:
+            command (str): a sentence that will execute the cb. 
+        """
+        words = self.split_sentence_to_words(command)
         root_word = self.words
+        for word in words:
 
-        for i, word in enumerate(words):
+            # If the word is exist move to the next node of word.
             if root_word.get(word):
                 root_word = root_word[word]
             else:
                 new_word = {}
                 key = word
-                if self.parameters_metadata:
-                    parameters_opt = self.parameters_metadata.get(word)
-                    if word.startswith("$") and parameters_opt:
-                        key = f'{word[0]}'
-                        new_word = {"index": i, **parameters_opt}
 
+                # Check if there is parameters_metadata
+                if self.parameters_metadata:
+                    token = self.get_token_parameter(word)
+                    if token:
+                        new_word, key = token
+
+                # Add new word the the node the current key(word).
                 root_word[key] = new_word
+
+                # Move root_word to the next node.
                 root_word = root_word[key]
 
+        # The last word in the command marks its end indictor to true.
         root_word["end"] = True
 
+    # Add list of commands.
     def add_commands(self, commands: List[str]):
         for command in commands:
             self.add_command(command)
@@ -50,7 +93,6 @@ class Command:
     def get_parameters(self, words: List[str], params_indexes: List[ParamsLocations]):
         if not self.parameters_metadata:
             return
-
         parameters = {}
         for param_indexes in params_indexes:
             metadata = self.parameters_metadata.get(param_indexes.token)
@@ -59,9 +101,8 @@ class Command:
         return parameters
 
     def execute(self, command: str):
-        words = list(filter(None, re.split(" |, |\. ", command.lower())))
+        words = self.split_sentence_to_words(command)
         cur_word = self.words
-
         params_indexes: List[ParamsLocations] = []
         startIndex = None
         endIndex = None
@@ -83,17 +124,19 @@ class Command:
                     startIndex = None
                     cur_param_name = None
 
-         # Check where is the first position of parameter location and save its index and his name.
+        # Check where is the first position of parameter location and save its index and his name.
             if not startIndex and cur_param:
+
                 startIndex = i
                 cur_word = cur_word["$"]
+
                 cur_param_name = cur_param.get("token")
 
         if cur_param_name:
             params_indexes.append(
                 ParamsLocations(cur_param_name, startIndex, len(words)))
 
-        self.words.get(cur_param_name) or self.words.get(word)
+        # self.words.get(cur_param_name) or self.words.get(word)
         parameters = self.get_parameters(words, params_indexes)
 
         res = None

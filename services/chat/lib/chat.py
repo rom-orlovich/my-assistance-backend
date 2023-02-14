@@ -1,6 +1,6 @@
 
 from services.chat.lib.bot import Bot
-from lib.my_types import Message
+from services.chat.lib.chat_types import Message
 import datetime
 
 

@@ -9,7 +9,7 @@ from typing import List, Dict
 from lib.date_utils import DateUtils
 
 
-from lib.my_types import Event
+from services.chat.lib.chat_types import Event
 from services.chat.lib.command import Command, ParamOption
 
 

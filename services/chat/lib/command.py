@@ -11,7 +11,7 @@ from typing import Callable, Dict, List, TypeVar
 
 from click import command
 
-from lib.DateUtils import DateUtils
+from lib.date_utils import DateUtils
 
 
 PO = TypeVar("PO", bound="ParamOption")
@@ -68,8 +68,8 @@ class Command:
         self.parameters_metadata = parameters_metadata
         self.cb = cb
 
-    def add_command(self, content: str):
-        words = list(filter(None, re.split(" |, |\. ", content.lower())))
+    def add_command(self, command: str):
+        words = list(filter(None, re.split(" |, |\. ", command.lower())))
 
         root_word = self.words
 
@@ -90,6 +90,10 @@ class Command:
 
         root_word["end"] = True
 
+    def add_commands(self, commands: List[str]):
+        for command in commands:
+            self.add_command(command)
+
     def get_parameters(self, words: List[str], params_indexes: List[ParamsLocations]):
         if not self.parameters_metadata:
             return
@@ -101,8 +105,8 @@ class Command:
             parameters[metadata.field_name] = " ".join(param_value)
         return parameters
 
-    def execute(self, content: str):
-        words = list(filter(None, re.split(" |, |\. ", content.lower())))
+    def execute(self, command: str):
+        words = list(filter(None, re.split(" |, |\. ", command.lower())))
         cur_word = self.words
 
         params_indexes: List[ParamsLocations] = []

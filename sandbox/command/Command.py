@@ -38,10 +38,10 @@ class Command:
                 if parameters_opt:
                     if word.startswith("$"):
                         root_word[i] = parameters_opt[word]
-                    else:
-                        new_word = {}
-                        root_word[word] = new_word
-                        root_word = root_word[word]
+                else:
+                    new_word = {}
+                    root_word[word] = new_word
+                    root_word = root_word[word]
 
         root_word["end"] = True
 
@@ -56,15 +56,13 @@ class Command:
             if parameters_opt:
                 cur_parameter = parameters.get(
                     parameters_opt.field_name)
-                until = parameters.get(parameters_opt.until)
+
                 if cur_parameter:
                     cur_parameter.append(word)
                 else:
                     parameters[f'{parameters_opt.field_name}'] = [word]
             else:
-                if until and until is not word:
-                    cur_parameter.append(word)
-                elif cur_word.get(word):
+                if cur_word.get(word):
                     cur_word = cur_word[word]
                 else:
                     print(parameters)
@@ -72,9 +70,10 @@ class Command:
 
         if cur_word.get("end"):
             if parameters:
-                self.cb(parameters)
+                res = self.cb(parameters)
             else:
-                self.cb()
+                res = self.cb()
+        return res
 
 
 if __name__ == "__main__":

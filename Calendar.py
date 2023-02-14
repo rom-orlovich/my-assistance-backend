@@ -48,11 +48,10 @@ class Calendar:
                                               maxResults=10, singleEvents=True,
                                               orderBy='startTime').execute()
         events = events_result.get('items')
-        print(events)
         if len(events) == 0:
             return 'No message was found in your calender, please add new one'
         else:
-            print(events)
+            print(events[0])
             return self.__print_events(events)
 
     def create_events(self, event: E):
@@ -78,18 +77,14 @@ class Calendar:
 
         return "The event was create successfully"
 
-    # def manage_commands(self, content: str, query: TypeVar("T", dict)):
-    #     if "/events/get/submit" in content:
-    #         return self.get_events(query)
-    #     elif "/events/create/submit" in content:
-    #         return self.create_events(query)
-
     def get_events_commands(self):
         command = Command(self.get_events)
         command.add_command("when is my next event?")
         command.add_command("when is my nearest event?")
         command.add_command("when is my closet event?")
         command.add_command("when's my closet event?")
+        command.add_command("what's my next event?")
+        command.add_command("whats my next event?")
 
         return command
 
@@ -115,4 +110,4 @@ class Calendar:
         if not content:
             return
 
-        self.command_get_events.execute(content)
+        return self.command_get_events.execute(content)

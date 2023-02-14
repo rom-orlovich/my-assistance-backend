@@ -8,24 +8,13 @@ from datetime import datetime
 from typing import List, Dict, TypeVar
 
 
-from my_types import Message
+from my_types import Event, Message
 from sandbox.command.Command import Command, DateUtil, ParamOption, TypeOption
-
-E = TypeVar("E", bound="Event")
-
-
-@dataclass
-class Event:
-    start: str
-    end: str
-    location: str
-    summary: str
-    # description: str
 
 
 class Calendar:
     def __init__(self) -> None:
-        self.command_get_events = self.get_events_commands()
+        self.command_get_closet_event = self.get_my_closet_event()
         self.command_create_events = self.create_event_commands()
 
     def __print_events(self, events: Dict[str, any]):
@@ -52,22 +41,41 @@ class Calendar:
                                               orderBy='startTime').execute()
         events = events_result.get('items')
         if len(events) == 0:
-            return 'No message was found in your calender, please add new one'
+            return []
         else:
-            print(events[0])
-            return self.__print_events(events)
+
+            return events
 
     def create_events(self, event: Event):
-
         service = self.get_service()
         event = self. create_event_dict(event)
         res = service.events().insert(calendarId='primary', body=event).execute()
-        print(res)
 
         return "The event was create successfully"
 
-    def get_events_commands(self):
-        command = Command(self.get_events)
+    def get_closet_event(self):
+        events = self.get_events()
+
+        if len(events):
+            event = events[0]
+            # start = event.start.date
+            start_date_dict = (event.get("start"))
+            start_date_str = datetime.fromisoformat(
+                start_date_dict.get("dateTime"))
+            start_date = start_date_str.strftime("%d/%m/%y")
+            start_time = start_date_str.strftime("%H:%M")
+            end_date_dict = (event.get("end"))
+            end_date_str = datetime.fromisoformat(
+                end_date_dict.get("dateTime"))
+            end_date = end_date_str.strftime("%d/%m/%y")
+            end_time = end_date_str.strftime("%H:%M")
+            print(event)
+            print(f'Your next event is on {start_date} at {start_time} and end on {end_date} at {end_time}'
+                  )
+            return f'Your next event is on {start_date} at {start_time} and end on {end_date} at {end_time}'
+
+    def get_my_closet_event(self):
+        command = Command(self.get_closet_event)
         command.add_command("when is my next event?")
         command.add_command("when is my nearest event?")
         command.add_command("when is my closet event?")
@@ -78,10 +86,7 @@ class Calendar:
         return command
 
     def create_event_dict(self, parameters: Event):
-        print(parameters)
-        # timeZone = pytz.timezone("Europe/London")
-        # dt = datetime.datetime.utcnow()
-        # local_dt = timeZone.localize(dt, is_dst=None)
+
         date_util = DateUtil()
 
         event = {
@@ -109,9 +114,9 @@ class Calendar:
         }
         command = Command(self.create_events, parameters_options)
         command.add_command(
-            "please add a new event that its summary is $summary. The event will begin in $start and end in $end and his location will place in $location")
+            "please add a new event that its summary is $summary. The event will begin on $start and end on $end and his location will place in $location")
         command.add_command(
-            "please create a new event that will start in $start and end in $end and will place in $location")
+            "please create a new event that will start on $start and end on $end and will place in $location")
 
         return command
 
@@ -119,6 +124,12 @@ class Calendar:
         if not content:
             return
 
-        res = self.command_get_events.execute(content)
+        res = self.command_get_closet_event.execute(content)
+
+        if res:
+
+            return res
+
         res = self.command_create_events.execute(content)
-        return res
+        if res:
+            return res

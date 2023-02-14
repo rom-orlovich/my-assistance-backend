@@ -98,6 +98,7 @@ class Command:
                 root_word = root_word[key]
 
         root_word["end"] = True
+
         # print(self.words)
 
     def get_parameters(self, words: List[str], params_indexes: List[ParamsLocations]):
@@ -152,13 +153,15 @@ class Command:
 
         self.words.get(cur_param_name) or self.words.get(word)
         parameters = self.get_parameters(words, params_indexes)
-        print(parameters)
+
         res = None
         if cur_word.get("end"):
+
             if parameters:
                 res = self.cb(parameters)
             else:
                 res = self.cb()
+
         return res
 
 

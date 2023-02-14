@@ -10,3 +10,12 @@ class Message:
     content: str
     date: str
     is_bot: bool
+
+
+@dataclass
+class Event:
+    start: str
+    end: str
+    location: str
+    summary: str
+    # description: str

@@ -1,5 +1,6 @@
 
 from dataclasses import dataclass
+from symbol import parameters
 from flask import redirect, session
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -8,7 +9,7 @@ from typing import List, Dict, TypeVar
 
 
 from my_types import Message
-from sandbox.command.Command import Command, ParamOption
+from sandbox.command.Command import Command, DateUtil, ParamOption, TypeOption
 
 E = TypeVar("E", bound="Event")
 
@@ -18,12 +19,14 @@ class Event:
     start: str
     end: str
     location: str
-    description: str
+    summary: str
+    # description: str
 
 
 class Calendar:
     def __init__(self) -> None:
         self.command_get_events = self.get_events_commands()
+        self.command_create_events = self.create_event_commands()
 
     def __print_events(self, events: Dict[str, any]):
         response = ""
@@ -54,24 +57,10 @@ class Calendar:
             print(events[0])
             return self.__print_events(events)
 
-    def create_events(self, event: E):
+    def create_events(self, event: Event):
 
         service = self.get_service()
-
-        event = {
-            # 'summary': 'Google I/O 2015',
-            'location': event.description,
-            'description': event.description,
-            'start': {
-                'dateTime': datetime.strptime(event.start, "%d/%m/%Y-%H:%M:%S").isoformat(),
-
-            },
-            'end': {
-                'dateTime': datetime.strptime(event.end, "%d/%m/%Y %H:%M:%S").isoformat(),
-
-            },
-        }
-
+        event = self. create_event_dict(event)
         res = service.events().insert(calendarId='primary', body=event).execute()
         print(res)
 
@@ -88,21 +77,41 @@ class Calendar:
 
         return command
 
-    def create_event_commands(self):
-        command = Command(self.get_events)
-        command.add_command(
-            "please add event on $1 at $2 until $3. The event will place in $4. The description is $5.",
-            {"$1": ParamOption(type="date", field_name="date", until="at")},
-            {"$2": ParamOption(type="date",
-                               field_name="date", until="until")},
-            {"$3": ParamOption(
-                type="date", field_name="date", until="the")},
-            {"$4": ParamOption(type="str",
-                               field_name="location", until="the")},
-            {"$5": ParamOption(type="str",
-                               field_name="description", until="end")},
+    def create_event_dict(self, parameters: Event):
+        print(parameters)
+        # timeZone = pytz.timezone("Europe/London")
+        # dt = datetime.datetime.utcnow()
+        # local_dt = timeZone.localize(dt, is_dst=None)
+        date_util = DateUtil()
 
-        )
+        event = {
+            'summary': parameters.get("summary"),
+            'location': parameters.get("location"),
+            # 'description': event.description,
+            'start': {
+                'dateTime':  date_util.convert(parameters.get("start")).isoformat(),
+                "timeZone": "Israel"},
+            'end': {
+                'dateTime': date_util.convert(parameters.get("end")).isoformat(),
+                "timeZone": "Israel"
+
+            },
+        }
+
+        return event
+
+    def create_event_commands(self):
+        parameters_options = {
+            "$start": ParamOption("start", TypeOption("date"), "$start"),
+            "$end": ParamOption("end", TypeOption("date"), "$end"),
+            "$location": ParamOption("location", TypeOption("str"), "$location"),
+            "$summary": ParamOption("summary", TypeOption("str"), "$summary")
+        }
+        command = Command(self.create_events, parameters_options)
+        command.add_command(
+            "please add a new event that its summary is $summary. The event will begin in $start and end in $end and his location will place in $location")
+        command.add_command(
+            "please create a new event that will start in $start and end in $end and will place in $location")
 
         return command
 
@@ -110,4 +119,6 @@ class Calendar:
         if not content:
             return
 
-        return self.command_get_events.execute(content)
+        res = self.command_get_events.execute(content)
+        res = self.command_create_events.execute(content)
+        return res

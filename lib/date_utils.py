@@ -7,7 +7,8 @@ class DateUtils:
     formats: List[str]
 
     def __init__(self) -> None:
-        self.formats = ['%d/%m/%Y,%H:%M', '%d-%m-%y,%H:%M', "%d-%m-%Y"]
+        self.formats = ['%d/%m/%Y,%H:%M',
+                        '%d-%m-%y,%H:%M', "%d-%m-%Y", "%H:%M"]
 
     def convert(self, value: str, format: str = None):
         formats = self.formats

@@ -67,6 +67,7 @@ class Command:
             command (str): a sentence that will execute the cb. 
         """
         words = self.split_sentence_to_words(command)
+
         root_word = self.words
         for word in words:
 
@@ -137,6 +138,7 @@ class Command:
         for i, word in enumerate(words):
             word_command = cur_word.get(word)
             cur_param = cur_word.get("$")
+
             # If there there is corresponded word is continue to next word.
             if word_command:
                 cur_word = cur_word[word]

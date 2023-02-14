@@ -7,6 +7,10 @@ from services.chat.lib.calender import Calendar
 
 
 class Bot:
+    """
+    Bot class is represent the bot entity.
+    The bot parse the user messages and response correspondingly.
+    """
     calender: Calendar
 
     def __init__(self, bot_response: Dict[str, str]):
@@ -14,10 +18,17 @@ class Bot:
         self.calender = Calendar()
 
     def get_bot_response(self, message: str):
+        """ 
+         Parse the user message and return the bot response.
+
+        Args:
+            message (str): The Message of the user.
+
+        Returns:
+            _type_: The bot response.
+        """
         calendar_response = self.calender.parse_message(message)
-
         if calendar_response:
-
             content = calendar_response
         else:
 

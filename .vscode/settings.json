@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
         "googleapiclient"
+    ],
+    "python.analysis.extraPaths": [
+        "./services/auth/lib"
     ]
 }

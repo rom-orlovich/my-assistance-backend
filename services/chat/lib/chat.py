@@ -5,7 +5,8 @@ import datetime
 
 
 class Chat:
-    """ Chat is class that manage the chat between the bot and the users.
+    """ 
+    Chat is class that manage the chat between the bot and the users.
     """
 
     def __init__(self) -> None:
@@ -29,13 +30,14 @@ class Chat:
         self.messages.append(new_message)
 
     def manage_chat(self, message: Message) -> int:
-        """_summary_
-
+        """ 
+         Manage the chat between the user and the bot.
+         After a new user's message was created a bot parse the message and response correspondingly.
         Args:
             message (Message): A new message from the user.
 
         Returns:
-            _type_: message_id
+            _type_: message_id of the user's message.
         """
         self.create_message(message)
         bot_response = self.bot.get_bot_response(message.get("content"))

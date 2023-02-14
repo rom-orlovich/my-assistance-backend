@@ -19,6 +19,28 @@ class Calendar:
         self.command_create_events = self.create_event_commands()
         self.date_util = DateUtils()
 
+    def get_date_event(self, event, type: str):
+        date_dict = (event.get(type))
+        date_str = date_dict.get("dateTime")
+        return date_str
+
+    def create_event_dict(self, parameters: Event):
+        date_util = DateUtils()
+        event = {
+            'summary': parameters.get("summary"),
+            'location': parameters.get("location"),
+            # 'description': event.description,
+            'start': {
+                'dateTime':  date_util.convert(parameters.get("start")).isoformat(),
+                "timeZone": "Israel"},
+            'end': {
+                'dateTime': date_util.convert(parameters.get("end")).isoformat(),
+                "timeZone": "Israel"
+            },
+        }
+
+        return event
+
     def get_service(self):
         if 'credentials' not in session:
             return redirect('/auth/authorize')
@@ -27,8 +49,28 @@ class Calendar:
         service = build('calendar', 'v3', credentials=credentials)
         return service
 
-    def get_events(self):
+    def create_events(self, event: Event):
+        service = self.get_service()
+        event = self. create_event_dict(event)
+        res = service.events().insert(calendarId='primary', body=event).execute()
+        return "The event was create successfully"
 
+    def create_event_commands(self):
+        parameters_options = {
+            "$start": ParamOption("start", "$start"),
+            "$end": ParamOption("end", "$end"),
+            "$location": ParamOption("location", "$location"),
+            "$summary": ParamOption("summary", "$summary")
+        }
+
+        command = Command(self.create_events, parameters_options)
+        command.add_command(
+            "please add a new event that its summary is $summary. The event will begin on $start and end on $end and his location will place in $location")
+        command.add_command(
+            "please create a new event that will start on $start and end on $end and will place in $location")
+        return command
+
+    def get_events(self):
         service = self.get_service()
         now = datetime.utcnow().isoformat() + 'Z'
         events_result = service.events().list(calendarId='primary', timeMin=now,
@@ -41,34 +83,11 @@ class Calendar:
 
             return events
 
-    def create_events(self, event: Event):
-        service = self.get_service()
-        event = self. create_event_dict(event)
-        res = service.events().insert(calendarId='primary', body=event).execute()
-
-        return "The event was create successfully"
-
-    def get_date_event(self, event, type: str):
-        date_dict = (event.get(type))
-        date_str = date_dict.get("dateTime")
-
-        return date_str
-
     def get_closet_event(self):
         events = self.get_events()
 
         if len(events):
             event = events[0]
-            # start_date_dict = (event.get("start"))
-            # start_date_str = datetime.fromisoformat(
-            #     start_date_dict.get("dateTime"))
-            # start_date = start_date_str.strftime("%d/%m/%y")
-            # start_time = start_date_str.strftime("%H:%M")
-            # end_date_dict = (event.get("end"))
-            # end_date_str = datetime.fromisoformat(
-            #     end_date_dict.get("dateTime"))
-            # end_date = end_date_str.strftime("%d/%m/%y")
-            # end_time = end_date_str.strftime("%H:%M")
             start_date, start_time = self.date_util.get_date_and_time(
                 self.get_date_event(event, "start"))
             end_date, end_time = self.date_util.get_date_and_time(
@@ -87,41 +106,6 @@ class Calendar:
         command.add_command("what's my next event?")
         command.add_command("what is my next event?")
         command.add_command("whats my next event?")
-
-        return command
-
-    def create_event_dict(self, parameters: Event):
-
-        date_util = DateUtils()
-
-        event = {
-            'summary': parameters.get("summary"),
-            'location': parameters.get("location"),
-            # 'description': event.description,
-            'start': {
-                'dateTime':  date_util.convert(parameters.get("start")).isoformat(),
-                "timeZone": "Israel"},
-            'end': {
-                'dateTime': date_util.convert(parameters.get("end")).isoformat(),
-                "timeZone": "Israel"
-            },
-        }
-
-        return event
-
-    def create_event_commands(self):
-        parameters_options = {
-            "$start": ParamOption("start", "$start"),
-            "$end": ParamOption("end", "$end"),
-            "$location": ParamOption("location", "$location"),
-            "$summary": ParamOption("summary", "$summary")
-        }
-        command = Command(self.create_events, parameters_options)
-        command.add_command(
-            "please add a new event that its summary is $summary. The event will begin on $start and end on $end and his location will place in $location")
-        command.add_command(
-            "please create a new event that will start on $start and end on $end and will place in $location")
-
         return command
 
     def parse_message(self, content: str):

@@ -24,8 +24,9 @@ class Command:
     def __init__(self, cb: Callable, parameters_metadata: Dict[str, ParamOption] = None):
         """
         Args:
-            cb (Callable): A callback that will execute when one of the commands are match.
-            parameters_metadata (Dict[str, ParamOption], optional):Meta data about the parameter that may include in the command. Defaults to None.
+            cb (Callable): A callback that will execute when one of the commands are matched.
+            parameters_metadata (Dict[str, ParamOption], optional):
+              Meta data about the parameter that may include in the command. Defaults to None.
         """
         self.words = {}
         self.parameters_metadata = parameters_metadata
@@ -53,7 +54,6 @@ class Command:
         if word.startswith("$") and parameters_opt:
             key = f'{word[0]}'
             token = {**parameters_opt}
-
             return token, key
         return None
 

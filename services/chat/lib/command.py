@@ -21,7 +21,7 @@ class Command:
         If a sentence matches a command, the callback will execute with the parameters.
     """
 
-    def __init__(self, cb: Callable, parameters_metadata: Dict[str, ParamOption] = None) -> None:
+    def __init__(self, cb: Callable, parameters_metadata: Dict[str, ParamOption] = None):
         """
         Args:
             cb (Callable): A callback that will execute when one of the commands are match.

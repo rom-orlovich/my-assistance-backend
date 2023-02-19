@@ -1,5 +1,3 @@
-
-
 from flask import Blueprint, jsonify, request
 from services.chat.lib.chat import chat
 

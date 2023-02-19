@@ -1,4 +1,3 @@
-
 from services.chat.lib.bot import Bot
 from services.chat.lib.chat_types import Message
 import datetime
@@ -6,14 +5,16 @@ import datetime
 
 class Chat:
     """ 
-    Chat is class that manage the chat between the bot and the users.
+    Manages the chat between the bot and the users.
     """
 
     def __init__(self) -> None:
         self.messages = list()
         self.message_id = 0
         self.bot = Bot({"hello": "Hey!",
-                        "how are you?": 'Fine!', "what are you doing?": "Nothing.", "what is the time?": datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")})
+                        "how are you?": 'Fine!',
+                        "what are you doing?": "Nothing.",
+                        "what is the time?": datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")})
         self.create_message(self.bot.get_bot_response(""))
 
     def create_message(self, message: Message) -> None:

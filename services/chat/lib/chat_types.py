@@ -1,4 +1,3 @@
-
 from typing import Optional, TypeVar
 from dataclasses import dataclass
 

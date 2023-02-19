@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 from typing import Dict
 
@@ -8,8 +7,8 @@ from services.chat.lib.calender import Calendar
 
 class Bot:
     """
-    Bot class is represent the bot entity.
-    The bot parse the user messages and response correspondingly.
+    Represents the bot entity.
+    The bot parses the user messages and responds accordingly.
     """
     calender: Calendar
 
@@ -31,6 +30,5 @@ class Bot:
         if calendar_response:
             content = calendar_response
         else:
-
             content = self.bot_responses.get(message, "How can I help you?")
         return {"content": content, "is_bot": True}

@@ -1,5 +1,3 @@
-
-
 from flask import redirect, session
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -7,15 +5,13 @@ from datetime import datetime
 
 from lib.date_utils import DateUtils
 
-
 from services.chat.lib.chat_types import Event
 from services.chat.lib.command import Command, ParamOption
 
 
 class Calendar:
     """
-       Calender is class that manage the calender operations of the user.
-       The operations execute by various predefined commands.    
+       Manages the calendar operations of the user.
     """
 
     def __init__(self) -> None:
@@ -23,13 +19,13 @@ class Calendar:
         self.command_create_events = self.create_event_commands()
         self.date_util = DateUtils()
 
-    # Extract the date value from the event calender api response.
+    # Extract the date value from the event calendar api response.
     def get_date_event(self, event, type: str):
         date_dict = (event.get(type))
         date_str = date_dict.get("dateTime")
         return date_str
 
-    # Transform the event parameters to match the current form of the calender's create event request.
+    # Transform the event parameters to match the current form of the calendar's create event request.
     def create_event_dict(self, parameters: Event):
         date_util = DateUtils()
         event = {
@@ -122,8 +118,8 @@ class Calendar:
         command.add_commands(commands)
         return command
 
-  # Parse message and execute the command.
-  # If the execution was successful, return the result.
+    # Parse message and execute the command.
+    # If the execution was successful, return the result.
     def parse_message(self, content: str):
         if not content:
             return

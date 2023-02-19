@@ -26,7 +26,9 @@ class Chat:
         """
         self.message_id += 1
         new_message = {"message_id": self.message_id,
-                       "date": datetime.datetime.now().isoformat(), "is_bot": False, **message}
+                       "date": datetime.datetime.now().isoformat(),
+                       "is_bot": False,
+                       **message}
 
         self.messages.append(new_message)
 

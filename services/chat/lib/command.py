@@ -17,8 +17,8 @@ from services.chat.lib.chat_types import ParamOption, ParamsLocations
 
 class Command:
     """
-        Command is class that its core is a Trie words data structure. 
-        If sentence will match the command the callback will execute with the parameters if they exist.
+        Contains a Trie words data structure.
+        If a sentence matches a command, the callback will execute with the parameters.
     """
 
     def __init__(self, cb: Callable, parameters_metadata: Dict[str, ParamOption] = None) -> None:

@@ -17,7 +17,6 @@ _FLOW = Flow.from_client_secrets_file(
     client_secrets_file=_CLIENT_SECRETS_FILE_NAME, scopes=_SCOPES,
     redirect_uri="http://localhost:5000/api/auth/authorize")
 
-# TODO: The following variable is never used - can be removed?
 # set the path to where the .json file you got Google console is
 client_secrets_file = path.join(pathlib.Path(
     __file__).parent, "client_secret.json")
